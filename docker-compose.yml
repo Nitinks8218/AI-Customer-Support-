@@ -1,0 +1,53 @@
+services:
+  db:
+    image: postgres:16-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-kestrel}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-kestrel_dev_pass}
+      POSTGRES_DB: ${POSTGRES_DB:-kestrel_support}
+    ports:
+      - '5432:5432'
+    volumes:
+      - kestrel_pg_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ['CMD-SHELL', 'pg_isready -U ${POSTGRES_USER:-kestrel} -d ${POSTGRES_DB:-kestrel_support}']
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  server:
+    build:
+      context: .
+      dockerfile: server/Dockerfile
+    restart: unless-stopped
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      NODE_ENV: production
+      PORT: 4000
+      DATABASE_URL: postgresql://${POSTGRES_USER:-kestrel}:${POSTGRES_PASSWORD:-kestrel_dev_pass}@db:5432/${POSTGRES_DB:-kestrel_support}?schema=public
+      JWT_SECRET: ${JWT_SECRET:-replace_with_long_random_secret_at_least_32_characters_long}
+      JWT_EXPIRES_IN: 7d
+      CLIENT_ORIGIN: ${CLIENT_ORIGIN:-http://localhost:5173}
+      AI_PROVIDER: ${AI_PROVIDER:-mock}
+      AI_API_KEY: ${AI_API_KEY:-}
+      AI_MODEL: ${AI_MODEL:-gemini-3.8-flash}
+    ports:
+      - '4000:4000'
+
+  client:
+    build:
+      context: .
+      dockerfile: client/Dockerfile
+      args:
+        VITE_API_BASE_URL: /api/v1
+    restart: unless-stopped
+    depends_on:
+      - server
+    ports:
+      - '5173:80'
+
+volumes:
+  kestrel_pg_data:

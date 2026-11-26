@@ -1,0 +1,18 @@
+:root {
+  --bg-canvas: #F7F5F0;
+  --bg-surface: #FFFFFF;
+  --bg-subtle: #EFECE5;
+  --bg-ink: #121A2B;
+  --text-primary: #121A2B;
+  --text-muted: #5A6376;
+  --border-hairline: #E2DDD2;
+  --accent-cobalt: #1D4ED8;
+  --accent-cobalt-hover: #1E40AF;
+  --accent-cobalt-soft: #EBF1FD;
+  --status-emerald: #0F766E;
+  --status-emerald-soft: #E6F4F1;
+  --status-ochre: #B45309;
+  --status-ochre-soft: #FEF3C7;
+  --status-crimson: #BE123C;
+  --status-crimson-soft: #FFE4E6;
+}

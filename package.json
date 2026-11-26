@@ -1,0 +1,20 @@
+{
+  "name": "kestrel-care-support-platform",
+  "version": "1.0.0",
+  "private": true,
+  "workspaces": [
+    "client",
+    "server"
+  ],
+  "scripts": {
+    "dev": "concurrently \"npm --workspace=server run dev\" \"npm --workspace=client run dev\"",
+    "build": "npm --workspace=server run build && npm --workspace=client run build",
+    "lint": "npm --workspace=server run lint && npm --workspace=client run lint",
+    "test": "npm --workspace=server run test && npm --workspace=client run test",
+    "db:migrate": "npm --workspace=server run db:migrate",
+    "db:seed": "npm --workspace=server run db:seed"
+  },
+  "devDependencies": {
+    "concurrently": "^9.1.2"
+  }
+}
